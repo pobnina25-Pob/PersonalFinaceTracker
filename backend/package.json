@@ -12,7 +12,8 @@
     "prisma:migrate": "prisma migrate deploy",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "deploy": "npm run prisma:generate && npm run prisma:migrate && npm run build"
+    "deploy": "npm run prisma:generate && npm run prisma:migrate && npm run build",
+    "vercel-build": "prisma generate"
   },
   "keywords": [],
   "author": "",

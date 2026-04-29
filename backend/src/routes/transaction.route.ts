@@ -4,26 +4,9 @@ import { transactionService } from '../services/transaction.service';
 export const transactionRouter = Router();
 
 import { prisma } from '../lib/prisma';
+import { deviceAuth } from '../middleware/deviceAuth';
 
-// Mock Authentication Middleware
-const mockAuth = async (req: any, res: Response, next: any) => {
-  req.user = { id: 'dummy-user-id' }; 
-  
-  try {
-    const existing = await prisma.user.findUnique({ where: { id: 'dummy-user-id' } });
-    if (!existing) {
-      await prisma.user.create({
-        data: { id: 'dummy-user-id', email: 'test@example.com', name: 'Test User' }
-      });
-    }
-    next();
-  } catch (error: any) {
-    console.error("Auth Error:", error.message || error);
-    res.status(500).json({ error: 'Auth failed', detail: error.message });
-  }
-};
-
-transactionRouter.use(mockAuth);
+transactionRouter.use(deviceAuth);
 
 // GET /api/transactions/categories
 transactionRouter.get('/categories', async (req: any, res: Response) => {

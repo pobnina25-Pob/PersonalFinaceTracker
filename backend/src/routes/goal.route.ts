@@ -1,14 +1,10 @@
 import { Router, Response } from 'express';
 import { prisma } from '../lib/prisma';
+import { deviceAuth } from '../middleware/deviceAuth';
 
 export const goalRouter = Router();
 
-const mockAuth = async (req: any, res: Response, next: any) => {
-  req.user = { id: 'dummy-user-id' }; 
-  next();
-};
-
-goalRouter.use(mockAuth);
+goalRouter.use(deviceAuth);
 
 // GET /api/goals
 goalRouter.get('/', async (req: any, res: Response) => {

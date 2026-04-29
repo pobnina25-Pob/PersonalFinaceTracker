@@ -99,6 +99,29 @@ export default function Dashboard() {
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
   const API_URL = `${API_BASE}/transactions`;
 
+  // Device-based user ID — เก็บใน localStorage แต่ละเครื่อง
+  const getDeviceId = (): string => {
+    if (typeof window === 'undefined') return '';
+    let id = localStorage.getItem('fintrack-device-id');
+    if (!id) {
+      id = crypto.randomUUID();
+      localStorage.setItem('fintrack-device-id', id);
+    }
+    return id;
+  };
+
+  // Fetch wrapper ที่ส่ง X-Device-ID header อัตโนมัติ
+  const authFetch = (url: string, options: RequestInit = {}): Promise<Response> => {
+    const deviceId = getDeviceId();
+    return fetch(url, {
+      ...options,
+      headers: {
+        ...options.headers,
+        'X-Device-ID': deviceId,
+      },
+    });
+  };
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -107,10 +130,10 @@ export default function Dashboard() {
     try {
       setLoading(true);
       const [transRes, sumRes, catRes, goalsRes] = await Promise.all([
-        fetch(API_URL),
-        fetch(`${API_URL}/summary`),
-        fetch(`${API_URL}/categories`),
-        fetch(`${API_BASE}/goals`)
+        authFetch(API_URL),
+        authFetch(`${API_URL}/summary`),
+        authFetch(`${API_URL}/categories`),
+        authFetch(`${API_BASE}/goals`)
       ]);
 
       if (!transRes.ok || !sumRes.ok || !catRes.ok || !goalsRes.ok) throw new Error("Failed to fetch");
@@ -133,7 +156,7 @@ export default function Dashboard() {
 
   const fetchInsights = async () => {
     try {
-      const res = await fetch(`${API_BASE}/ai/insights`);
+      const res = await authFetch(`${API_BASE}/ai/insights`);
       if (res.ok) {
         const data = await res.json();
         setInsights(data.insights);
@@ -151,7 +174,7 @@ export default function Dashboard() {
   const handleAddGoal = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${API_BASE}/goals`, {
+      const res = await authFetch(`${API_BASE}/goals`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newGoal)
@@ -169,7 +192,7 @@ export default function Dashboard() {
   const handleAddFund = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${API_BASE}/goals/${isAddFundModalOpen.goalId}`, {
+      const res = await authFetch(`${API_BASE}/goals/${isAddFundModalOpen.goalId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ addAmount: isAddFundModalOpen.amount })
@@ -186,7 +209,7 @@ export default function Dashboard() {
   const handleDeleteGoal = async (id: string) => {
     if (!confirm("Are you sure?")) return;
     try {
-      await fetch(`${API_BASE}/goals/${id}`, { method: "DELETE" });
+      await authFetch(`${API_BASE}/goals/${id}`, { method: "DELETE" });
       await fetchData();
     } catch (err) {
       console.error(err);
@@ -197,7 +220,7 @@ export default function Dashboard() {
   const handleDeleteTransaction = async (id: string) => {
     if (!confirm(language === 'th' ? 'ต้องการลบรายการนี้?' : 'Delete this transaction?')) return;
     try {
-      await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      await authFetch(`${API_URL}/${id}`, { method: 'DELETE' });
       await fetchData();
     } catch (err) {
       console.error(err);
@@ -209,7 +232,7 @@ export default function Dashboard() {
     const msg = language === 'th' ? 'ลบรายการทั้งหมด? การดำเนินการนี้ไม่สามารถย้อนกลับได้!' : 'Delete ALL transactions? This cannot be undone!';
     if (!confirm(msg)) return;
     try {
-      await fetch(`${API_URL}/reset`, { method: 'DELETE' });
+      await authFetch(`${API_URL}/reset`, { method: 'DELETE' });
       await fetchData();
     } catch (err) {
       console.error(err);
@@ -220,7 +243,7 @@ export default function Dashboard() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const res = await fetch(API_URL, {
+      const res = await authFetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -288,7 +311,7 @@ export default function Dashboard() {
         }));
 
         try {
-          const res = await fetch(`${API_URL}/import`, {
+          const res = await authFetch(`${API_URL}/import`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ transactions: importData })
@@ -315,7 +338,7 @@ export default function Dashboard() {
     setIsTyping(true);
 
     try {
-      const res = await fetch(`${API_BASE}/ai/chat`, {
+      const res = await authFetch(`${API_BASE}/ai/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
