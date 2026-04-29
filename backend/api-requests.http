@@ -1,0 +1,27 @@
+### 1. ทดสอบเพิ่มรายรับ (INCOME)
+POST http://localhost:5000/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 25000,
+  "type": "INCOME",
+  "description": "รายได้เสริมรับงานฟรีแลนซ์",
+  "date": "2026-04-29T10:00:00.000Z"
+}
+
+### 2. ทดสอบเพิ่มรายจ่าย (EXPENSE)
+POST http://localhost:5000/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 850,
+  "type": "EXPENSE",
+  "description": "ค่ากาแฟและอาหารกลางวัน",
+  "date": "2026-04-29T12:30:00.000Z"
+}
+
+### 3. ทดสอบดึงรายการทั้งหมดในเดือนนี้
+GET http://localhost:5000/api/transactions
+
+### 4. ทดสอบดึงสรุปรายรับ-รายจ่าย (Dashboard Summary)
+GET http://localhost:5000/api/transactions/summary
