@@ -60,6 +60,22 @@
 - **Database:** SQLite (development) via Prisma ORM
 - **UI:** Glassmorphism design, gradient cards, responsive layout
 
+
+Markdown
+## 🛠 Current Development Status & Data Handling
+
+### 🧪 Mock Data & Public Access (Phase 1)
+ในเวอร์ชันปัจจุบัน โปรเจกต์อยู่ในช่วง **Prototype Phase** เพื่อเน้นการทดสอบประสิทธิภาพของระบบคำนวณและ AI Insights โดยมีรายละเอียดการจัดการข้อมูลดังนี้:
+
+- **Anonymous Access:** ระบบปัจจุบันเปิดให้เข้าใช้งานและทดสอบฟีเจอร์ได้โดยไม่ต้องลงชื่อเข้าใช้ (Public Access) เพื่อความสะดวกในการตรวจสอบ UI/UX และ Logic การคำนวณ
+- **Simulated Environment:** ข้อมูลที่ปรากฏและข้อมูลที่ผู้ใช้กรอกในปัจจุบันจะถูกปฏิบัติเป็น **Mock Data** เพื่อใช้ในการทดสอบระบบ (Dummy Test)
+- **Database Schema:** แม้จะเป็นการทดสอบแบบเปิด แต่โครงสร้างฐานข้อมูล (Prisma Schema) ถูกออกแบบมารองรับระบบ User-based อย่างเต็มรูปแบบ (มีฟิลด์ `userId` และ `password` เตรียมไว้แล้ว)
+
+### 🔐 Next Steps: Security Implementation
+- พัฒนาระบบ **Authentication & Authorization** ด้วย NextAuth.js ในเฟสถัดไป
+- ปรับเปลี่ยนระบบเข้าถึงข้อมูลจาก Public เป็น **Private Data Isolation** (หนึ่งคนเห็นเฉพาะข้อมูลของตนเอง)
+- เพิ่มระบบ Hash Password เพื่อความปลอดภัยตามมาตรฐาน PDPA
+  
 ---
 
 ## 📊 Phase 2: Analytics & Data - กราฟและข้อมูล
