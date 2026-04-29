@@ -15,7 +15,7 @@
 | Service | URL |
 |---------|-----|
 | **Frontend** | [https://frontend-eta-hazel-91.vercel.app](https://frontend-eta-hazel-91.vercel.app) |
-| **Backend** | [https://backend-fintrack.vercel.app](https://backend-fintrack.vercel.app) |
+| **Backend** | [https://backend-nine-blue-11.vercel.app/api](https://backend-nine-blue-11.vercel.app/api) |
 | **Database** | Supabase PostgreSQL (ap-south-1) |
 
 ---
